@@ -114,6 +114,8 @@ type DatabaseConfig struct {
 	SQLMaxIdleConnections            int               `mapstructure:"sqlMaxIdleConnections"`
 	SQLMaxOpenConnections            int               `mapstructure:"sqlMaxOpenConnections"`
 	SQLConnectionMaxLifetimeDuration string            `mapstructure:"sqlConnectionMaxLifetimeDuration"`
+	MetricsLabels                    map[string]string `mapstructure:"metricsLabels"`
+	MetricsRefreshSeconds            int               `mapstructure:"metricsRefresh" validate:"gte=0"`
 }
 
 // CredentialConfig Credential Configurations.

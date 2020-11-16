@@ -6,6 +6,7 @@ import (
 
 	"github.com/oxyno-zeta/golang-graphql-example/pkg/golang-graphql-example/config"
 	"github.com/oxyno-zeta/golang-graphql-example/pkg/golang-graphql-example/log"
+	"github.com/oxyno-zeta/golang-graphql-example/pkg/golang-graphql-example/metrics"
 	"github.com/pkg/errors"
 	"gorm.io/gorm"
 
@@ -16,6 +17,7 @@ type postresdb struct {
 	logger     log.Logger
 	db         *gorm.DB
 	cfgManager config.Manager
+	metricsCl  metrics.Client
 }
 
 func (ctx *postresdb) GetSQLDB() (*sql.DB, error) {
@@ -65,6 +67,13 @@ func (ctx *postresdb) Connect() error {
 	// Check if error exists
 	if err != nil {
 		return errors.WithStack(err)
+	}
+
+	// Apply metrics middleware
+	err = dbResult.Use(ctx.metricsCl.GormMiddleware(cfg.Database.MetricsLabels, cfg.Database.MetricsRefreshSeconds))
+	// Check error
+	if err != nil {
+		return err
 	}
 
 	// Trying to ping database

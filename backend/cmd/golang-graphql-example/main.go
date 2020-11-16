@@ -71,7 +71,7 @@ func main() {
 	})
 
 	// Create database service
-	db := database.NewDatabase(cfgManager, logger)
+	db := database.NewDatabase(cfgManager, logger, metricsCl)
 	// Connect to engine
 	err = db.Connect()
 	if err != nil {

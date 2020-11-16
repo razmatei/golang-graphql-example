@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 // Client Client metrics interface
@@ -13,6 +14,8 @@ type Client interface {
 	Instrument(serverName string) gin.HandlerFunc
 	// Get prometheus handler for http expose
 	GetPrometheusHTTPHandler() http.Handler
+	// Get GORM middleware
+	GormMiddleware(labels map[string]string, refresh int) gorm.Plugin
 }
 
 // NewMetricsClient will generate a new Client.

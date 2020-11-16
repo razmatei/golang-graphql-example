@@ -8,8 +8,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"gorm.io/gorm"
 
 	gqlprometheus "github.com/99designs/gqlgen-contrib/prometheus"
+	gormprometheus "gorm.io/plugin/prometheus"
 )
 
 type prometheusMetrics struct {
@@ -42,6 +44,19 @@ func (ctx *prometheusMetrics) Instrument(serverName string) gin.HandlerFunc {
 		ctx.reqSz.WithLabelValues(serverName).Observe(float64(reqSz))
 		ctx.resSz.WithLabelValues(serverName).Observe(resSz)
 	}
+}
+
+func (ctx *prometheusMetrics) GormMiddleware(labels map[string]string, refresh int) gorm.Plugin {
+	// Create prometheus middleware
+	prometheusMiddleware := gormprometheus.New(gormprometheus.Config{
+		RefreshInterval: uint32(refresh), // Refresh metrics interval (default 15 seconds)
+	})
+	// Apply labels to prometheus middleware
+	if labels != nil {
+		prometheusMiddleware.Labels = labels
+	}
+
+	return prometheusMiddleware
 }
 
 // From https://github.com/DanielHeckrath/gin-prometheus/blob/master/gin_prometheus.go

@@ -35,5 +35,6 @@ require (
 	golang.org/x/sync v0.0.0-20201020160332-67f06af15bc9
 	gopkg.in/square/go-jose.v2 v2.5.1 // indirect
 	gorm.io/driver/postgres v1.0.5
-	gorm.io/gorm v1.20.5
+	gorm.io/gorm v1.20.6
+	gorm.io/plugin/prometheus v0.0.0-20201110055837-cd7810121407
 )
